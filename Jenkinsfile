@@ -52,10 +52,12 @@ pipeline {
             }
         }
         
-    post {
-        always {
-            // Clean up Docker images to avoid running out of space
-            sh "docker system prune -af"
+        post {
+            always {
+                // Clean up Docker images to avoid running out of space
+                sh "docker system prune -af"
+            }
         }
     }
 }
+
