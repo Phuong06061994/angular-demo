@@ -1,5 +1,5 @@
 pipeline {
-    agent {label 'node-slave'}
+    agent {label 'node-slave-a6d79bf4'}
 
     environment {
         // Set Docker Hub credentials
