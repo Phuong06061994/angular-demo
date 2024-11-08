@@ -4,7 +4,7 @@ pipeline {
     environment {
         // Set Docker Hub credentials
         DOCKER_CREDENTIALS = 'dockerhub-credential' // This is your Jenkins credentials ID
-        DOCKER_IMAGE_NAME = 'phuong06061994/java-demo'
+        DOCKER_IMAGE_NAME = 'phuong06061994/angular-demo'
         IMAGE_TAG = "${env.BUILD_ID}"
     }
 
