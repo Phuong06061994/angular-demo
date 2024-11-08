@@ -7,7 +7,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                 // Checkout the code from your repository
+                // Checkout the code from your repository
                 checkout scm
             }
         }
@@ -40,11 +40,7 @@ pipeline {
     }
     post {
         always {
-            script {
-                // Clean up any images left after the build
-                docker.image(DOCKER_IMAGE).remove()
-            }
-            cleanWs()
+            cleanWs()  // Clean workspace, no image removal
         }
     }
 }
