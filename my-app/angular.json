@@ -82,7 +82,7 @@
           },
           "defaultConfiguration": "development",
           "options": {
-            "proxyConfig": "proxy.conf.json"
+            "open": true
           }
         },
         "extract-i18n": {
