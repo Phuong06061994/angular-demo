@@ -6,6 +6,11 @@ pipeline {
         DOCKER_CREDENTIALS = 'dockerhub-credential' // This is your Jenkins credentials ID
         DOCKER_IMAGE_NAME = 'phuong06061994/angular-demo'
         IMAGE_TAG = "${env.BUILD_ID}"
+        GIT_CREDENTIALS = 'github-credential'  // Jenkins GitHub credentials ID
+        GIT_REPO_URL = 'https://github.com/Phuong06061994/angular-demo.git'  // Replace with your repo URL
+        REMOTE_HOST = 'phuongnv63@localhost'
+        SSH_CREDENTIALS = 'remote-host-ssh-credential'
+        REMOTE_COMPOSE_PATH = 'C:/PhuongNV63/github/angular-demo/docker-compose.yml'
     }
 
     stages {
@@ -61,6 +66,48 @@ pipeline {
                 }
             }
         }
+         stage('Update docker-compose.yml with Tag') {
+                steps {
+                    script {
+                        sh "sed -i 's|image: phuong06061994/angular-demo:.*|image: phuong06061994/angular-demo:${IMAGE_TAG}|' docker-compose.yml"
+                    }
+                }
+        }
+        // stage('Commit and Push Changes to GitHub') {
+        //     steps {
+        //         script {
+        //             withCredentials([usernamePassword(credentialsId: GIT_CREDENTIALS, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+        //                 sh """
+        //                     git config user.name "Jenkins"
+        //                     git config user.email "jenkins@yourdomain.com"
+        //                     git add docker-compose.yml
+        //                     git commit -m "Update docker-compose.yml with image tag ${IMAGE_TAG}"
+        //                     git push https://\$GIT_USERNAME:\$GIT_PASSWORD@github.com/Phuong06061994/angular-demo.git HEAD:main                     
+        //                 """
+        //             }
+        //         }
+        //     }
+        // }
+
+        stage('Deploy on Remote Host') {
+            steps {
+                script {
+                    // SSH into the remote host to update and deploy using docker-compose
+                    sshagent([SSH_CREDENTIALS]) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ${REMOTE_HOST} '
+                                cd ${REMOTE_COMPOSE_PATH}
+                                sed -i "s|image: phuong06061994/angular-demo:.*|image: phuong06061994/angular-demo:${IMAGE_TAG}|" docker-compose.yml
+                                docker-compose down
+                                docker-compose pull
+                                docker-compose up -d
+                            '
+                        """
+                    }
+                }
+            }
+        }
+
     }
     post {
         always {
